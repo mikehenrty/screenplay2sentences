@@ -1,6 +1,3 @@
-const INPUT_FILE = 'script.txt';
-const OUTPUT_FILE = 'lines.txt';
-
 const readline = require('readline');
 const fs = require('fs');
 
@@ -9,7 +6,7 @@ function isUpperCase(line) {
 }
 
 const input = readline.createInterface({
-  input: fs.createReadStream(INPUT_FILE)
+  input: fs.createReadStream(process.argv[2])
 });
 
 
@@ -58,7 +55,20 @@ function getSentences(paragraph) {
   return sentences;
 }
 
-var output = fs.createWriteStream(OUTPUT_FILE);
+/*
+function shuffle(array) {
+  var rand, index = -1,
+    length = array.length,
+    result = Array(length);
+  while (++index < length) {
+    rand = Math.floor(Math.random() * (index + 1));
+    result[index] = result[rand];
+    result[rand] = array[index];
+  }
+  return result;
+}
+*/
+
 var finalSentences = [];
 
 input.on('close', () => {
@@ -66,7 +76,8 @@ input.on('close', () => {
     finalSentences = finalSentences.concat(getSentences(line));
   });
   finalSentences = finalSentences.filter(s => {
-    if (s.includes(',') || s.includes('–') || s.includes('..')) {
+    if (s.includes(',') || s.includes('–') ||
+        s.includes('..') || s.includes('-')) {
       return false;
     }
 
@@ -78,9 +89,8 @@ input.on('close', () => {
     return true;
   });
   finalSentences.forEach(sentence => {
-    output.write(sentence + '\n');
+    process.stdout.write(sentence + '\n');
   });
-  output.end();
 });
 
 
