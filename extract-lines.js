@@ -1,5 +1,6 @@
 const readline = require('readline');
 const fs = require('fs');
+const wordnet = require('wordnet');
 
 function isUpperCase(line) {
   return line === line.toUpperCase();
@@ -77,11 +78,27 @@ input.on('close', () => {
   });
   finalSentences = finalSentences.filter(s => {
     if (s.includes(',') || s.includes('–') ||
-        s.includes('..') || s.includes('-')) {
+        s.includes('..') || s.includes('-') ||
+        s.includes(')') || s.includes('\' ') || s.includes('de ')) {
       return false;
     }
 
-    var spaces = s.split(' ').length - 1;
+    var words = s.split(' ');
+    /*
+    words.forEach(w => {
+      try {
+        w && wordnet.lookup(w, (err, def) => {
+          if (err) {
+            console.log('error', w, err);
+          }
+        });
+      } catch (err) {
+        console.log('bad word', w, err);
+      }
+    });
+    */
+
+    var spaces = words.length - 1;
     if (spaces < 3 || spaces > 10) {
       return false;
     }
